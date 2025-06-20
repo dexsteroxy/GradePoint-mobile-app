@@ -1,0 +1,63 @@
+# for registration
+###
+POST http://localhost:3000/api/auth/register 
+Content-Type: application/json
+
+{
+    "username": "Madara Uchiha",
+    "password": "1234567",
+    "email": "amaditochukwu11@gmail.com"
+
+}
+
+###
+#for verifying email
+
+POST http://localhost:3000/api/auth/verify-email 
+Content-Type: application/json
+
+{
+    "code": "911399"
+}
+
+###
+#for logging user out
+
+POST http://localhost:3000/api/auth/logout
+
+# for logging in the user
+###
+POST http://localhost:3000/api/auth/login 
+Content-Type: application/json
+
+{
+  "email": "amaditochukwu11@gmail.com",
+  "password": "1234567"
+}
+
+###
+#for forgort password testing
+
+POST http://localhost:3000/api/auth/forgot-password 
+Content-Type: application/json
+
+{
+  "email": "amaditochukwu11@gmail.com"
+}
+
+
+###
+#for forgot email sussecss
+
+POST http://localhost:3000/api/auth/reset-password/23c62f572b4892d7d7d95f10a3d75409bea2c3d4 
+Content-Type: application/json
+
+{
+  "password": "tochi.123eo"
+}
+
+
+
+###
+
+GET  http://localhost:3000/api/auth/check-auth
