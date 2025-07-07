@@ -1,5 +1,6 @@
 import express from "express";
 import "dotenv/config";
+import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import { connectDB } from "../lib/db.js";
 import cookieParser from "cookie-parser";
@@ -7,15 +8,22 @@ import cookieParser from "cookie-parser";
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware (must come before routes)
+// CORS middleware
+app.use(
+  cors({
+    origin: "http://localhost:3000", // your frontend URL
+    credentials: true, // enable cookies / auth headers
+  })
+);
+
+// Other middleware
 app.use(express.json());
-app.use(cookieParser()) //allows us to parse cookies from the request object
-// for connecting the mongodb database;
+app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRoutes);
 
-// First connect to DB, then start server
+// Start server
 async function startServer() {
   try {
     await connectDB();
