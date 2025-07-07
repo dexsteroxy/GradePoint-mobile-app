@@ -2,11 +2,10 @@
 ###
 POST http://localhost:3000/api/auth/register 
 Content-Type: application/json
-
 {
-    "username": "Madara Uchiha",
-    "password": "1234567",
-    "email": "amaditochukwu11@gmail.com"
+    "username": "madara",
+    "password": "beans/rice",
+    "email": "dexsteroxy.1234@gmail.com"
 
 }
 
@@ -17,7 +16,7 @@ POST http://localhost:3000/api/auth/verify-email
 Content-Type: application/json
 
 {
-    "code": "911399"
+    "code": "709617"
 }
 
 ###
