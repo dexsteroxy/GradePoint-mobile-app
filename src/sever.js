@@ -5,7 +5,7 @@ import { connectDB } from "../lib/db.js";
 import cookieParser from "cookie-parser";
 import cors from 'cors';
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware (must come before routes)
 app.use(express.json());
@@ -20,7 +20,7 @@ async function startServer() {
   try {
     await connectDB();
   app.use(cors({
-  origin: 'http://localhost:3000', // or '*' during testing
+  origin: 'http://localhost:5000', // or '*' during testing
 }));
   } catch (err) {
     console.error("Failed to start server:", err);
