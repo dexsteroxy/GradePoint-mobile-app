@@ -3,9 +3,9 @@ import "dotenv/config";
 import authRoutes from "./routes/authRoutes.js";
 import { connectDB } from "../lib/db.js";
 import cookieParser from "cookie-parser";
-import cors from 'cors';
+
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 
 // Middleware (must come before routes)
 app.use(express.json());
@@ -19,9 +19,9 @@ app.use("/api/auth", authRoutes);
 async function startServer() {
   try {
     await connectDB();
-  app.use(cors({
-  origin: 'http://localhost:5000', // or '*' during testing
-}));
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
   } catch (err) {
     console.error("Failed to start server:", err);
     process.exit(1);
