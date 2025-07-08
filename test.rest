@@ -13,7 +13,7 @@ Content-Type: application/json
 ###
 #for verifying email
 
-POST http://localhost:3000/api/auth/verify-email 
+POST http://localhost:3001/api/auth/verify-email 
 Content-Type: application/json
 
 {
@@ -23,11 +23,11 @@ Content-Type: application/json
 ###
 #for logging user out
 
-POST http://localhost:3000/api/auth/logout
+POST http://localhost:3001/api/auth/logout
 
 # for logging in the user
 ###
-POST http://localhost:3000/api/auth/login 
+POST http://localhost:3001/api/auth/login 
 Content-Type: application/json
 
 {
@@ -38,7 +38,7 @@ Content-Type: application/json
 ###
 #for forgort password testing
 
-POST http://localhost:3000/api/auth/forgot-password 
+POST http://localhost:3001/api/auth/forgot-password 
 Content-Type: application/json
 
 {
@@ -49,7 +49,7 @@ Content-Type: application/json
 ###
 #for forgot email sussecss
 
-POST http://localhost:3000/api/auth/reset-password/23c62f572b4892d7d7d95f10a3d75409bea2c3d4 
+POST http://localhost:3001/api/auth/reset-password/23c62f572b4892d7d7d95f10a3d75409bea2c3d4 
 Content-Type: application/json
 
 {
@@ -60,7 +60,7 @@ Content-Type: application/json
 
 ###
 
-GET  http://localhost:3000/api/auth/check-auth
+GET  http://localhost:3001/api/auth/check-auth
 
 
 ###

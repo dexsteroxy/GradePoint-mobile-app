@@ -9,7 +9,8 @@ import {
 } from "../utils/emailSender.js";
 import bcrypt from "bcryptjs";
 import crypto from "crypto"
-
+import cloudinary from "../lib/cloudinary.js";
+import mongoose from "mongoose";
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
   try {
@@ -358,5 +359,43 @@ export const updateProfile = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Profile update failed" });
+  }
+};
+
+
+
+
+
+export const uploadAvatar = async (req, res) => {
+  try {
+    const userId = mongoose.Types.ObjectId.createFromHexString(req.params.userId);
+
+    if (!req.file) return res.status(400).json({ message: "No image provided" });
+
+    // 1. upload to Cloudinary
+    const { buffer } = req.file;
+    const uploadRes = await cloudinary.uploader.upload_stream(
+      { folder: "avatars", resource_type: "image" },
+      async (error, result) => {
+        if (error) throw error;
+
+        // 2. save URL in DB
+        const updated = await UserProfile.findOneAndUpdate(
+          { user: userId },
+          { avatar: result.secure_url },
+          { new: true }
+        );
+
+        if (!updated) return res.status(404).json({ message: "Profile not found" });
+
+        res.json(updated);
+      }
+    );
+
+    // pipe buffer into the stream
+    uploadRes.end(buffer);
+  } catch (err) {
+    console.error("🔥 Avatar upload error:", err);
+    res.status(500).json({ message: "Avatar upload failed" });
   }
 };

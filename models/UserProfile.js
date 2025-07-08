@@ -26,6 +26,11 @@ const userProfileSchema = new mongoose.Schema({
     enum: ["Male", "Female", "Other"],
     required: true,
   },
+
+  avatar: {
+  type: String,          
+  default: null,
+},
   state: {
     type: String,
     required: true,
