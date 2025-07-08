@@ -1,4 +1,5 @@
 import { User } from "../models/Users.js";
+import { UserProfile } from "../models/UserProfile.js";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 import {
   sendPasswordResetEmail,
@@ -303,3 +304,59 @@ export const checkAuth = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 }
+
+
+
+export const createProfile = async (req, res) => {
+  try {
+    const { user, faculty, department, regNumber, gender, state } = req.body;
+
+    // ✅ Check if profile already exists
+    const existing = await UserProfile.findOne({ user });
+    if (existing) return res.status(400).json({ message: "Profile already exists" });
+
+    // ✅ Create profile directly with ObjectId
+    const profile = await UserProfile.create({
+      user, faculty, department, regNumber, gender, state
+    });
+
+    res.status(201).json(profile);
+  } catch (error) {
+    console.error("🔥 Profile creation error:", error);
+    res.status(500).json({ message: "Profile creation failed", error: error.message });
+  }
+};
+
+
+
+export const getProfile = async (req, res) => {
+  try {
+    const profile = await UserProfile.findOne({ user: req.params.userId }).populate("user");
+
+    if (!profile) return res.status(404).json({ message: "Profile not found" });
+
+    res.json(profile);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch profile" });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const updated = await UserProfile.findOneAndUpdate(
+      { user: req.params.userId },  // Match the profile by userId
+      req.body,                     // Update fields in request body
+      { new: true }                 // Return the updated document
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+
+    res.json(updated);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Profile update failed" });
+  }
+};

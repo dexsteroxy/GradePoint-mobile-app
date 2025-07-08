@@ -61,3 +61,36 @@ Content-Type: application/json
 ###
 
 GET  http://localhost:3000/api/auth/check-auth
+
+
+###
+
+POST http://localhost:3001/api/auth/profile 
+Content-Type: application/json
+
+{
+    "user": "66bc2b3dfae52cd8e3c8b8c9",
+     "faculty": "physical science",
+      "department": "mathematics",
+       "regNumber": "toc20202020hi",
+        "gender": "Male",
+        "state": "imo state"
+}
+
+###
+GET http://localhost:3001/api/auth/profile/66bc2b3dfae52cd8e3c8b8c9
+
+
+###
+
+
+PUT http://localhost:3001/api/auth/profile/66bc2b3dfae52cd8e3c8b8c9
+Content-Type: application/json
+
+{
+  "faculty": "Engineering",
+  "department": "Computer Engineering",
+  "regNumber": "TCH2025999",
+  "gender": "Male",
+  "state": "Lagos"
+}
