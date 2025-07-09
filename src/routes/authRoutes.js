@@ -2,6 +2,9 @@ import express from 'express';
 import {  register, verifyEmail, logout, login, forgotPassword, createProfile, getProfile, updateProfile, uploadAvatar, resetPassword, checkAuth } from '../../controllers/auth.controller.js';
 import { verifyToken } from '../../middleware/verifyToken.js';
 import { upload } from "../../middleware/upload.js";
+import multer from 'multer';
+const storage = multer.memoryStorage();
+// const upload = multer({ storage });
 const router = express.Router();
 // endpoints
 router.get("/check-auth", verifyToken, checkAuth);

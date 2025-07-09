@@ -10,6 +10,7 @@ import {
 import bcrypt from "bcryptjs";
 import crypto from "crypto"
 import cloudinary from "../lib/cloudinary.js";
+
 import mongoose from "mongoose";
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -376,17 +377,21 @@ export const uploadAvatar = async (req, res) => {
 
     const { buffer } = req.file;
 
-    const uploadStreamToCloudinary = () =>
-      new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { folder: "avatars", resource_type: "image" },
-          (error, result) => {
-            if (error) return reject(error);
-            resolve(result);
-          }
-        );
-        stream.end(buffer);
-      });
+  const uploadStreamToCloudinary = () =>
+  new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "avatars", resource_type: "image" },
+      (error, result) => {
+        if (error) {
+          console.error("❌ Cloudinary error:", error);
+          return reject(error);
+        }
+        resolve(result);
+      }
+    );
+    stream.end(buffer);
+  });
+
 
     const result = await uploadStreamToCloudinary();
 
