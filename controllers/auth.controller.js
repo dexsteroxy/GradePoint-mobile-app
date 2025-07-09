@@ -370,30 +370,36 @@ export const uploadAvatar = async (req, res) => {
   try {
     const userId = mongoose.Types.ObjectId.createFromHexString(req.params.userId);
 
-    if (!req.file) return res.status(400).json({ message: "No image provided" });
+    if (!req.file) {
+      return res.status(400).json({ message: "No image provided" });
+    }
 
-    // 1. upload to Cloudinary
     const { buffer } = req.file;
-    const uploadRes = await cloudinary.uploader.upload_stream(
-      { folder: "avatars", resource_type: "image" },
-      async (error, result) => {
-        if (error) throw error;
 
-        // 2. save URL in DB
-        const updated = await UserProfile.findOneAndUpdate(
-          { user: userId },
-          { avatar: result.secure_url },
-          { new: true }
+    const uploadStreamToCloudinary = () =>
+      new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "avatars", resource_type: "image" },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
         );
+        stream.end(buffer);
+      });
 
-        if (!updated) return res.status(404).json({ message: "Profile not found" });
+    const result = await uploadStreamToCloudinary();
 
-        res.json(updated);
-      }
+    // Save URL in DB
+    const updated = await UserProfile.findOneAndUpdate(
+      { user: userId },
+      { avatar: result.secure_url },
+      { new: true }
     );
 
-    // pipe buffer into the stream
-    uploadRes.end(buffer);
+    if (!updated) return res.status(404).json({ message: "Profile not found" });
+
+    res.json(updated);
   } catch (err) {
     console.error("🔥 Avatar upload error:", err);
     res.status(500).json({ message: "Avatar upload failed" });
