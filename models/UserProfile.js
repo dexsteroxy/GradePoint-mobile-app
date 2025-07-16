@@ -16,6 +16,21 @@ const userProfileSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  fullName: {
+    type: String,
+    required: true,
+  },
+   currentLevel: {
+    type: String,
+    required: true,
+  },
+
+   email: {
+    type: String,
+    required: true,
+  },
+
   regNumber: {
     type: String,
     required: true,
@@ -31,10 +46,7 @@ const userProfileSchema = new mongoose.Schema({
   type: String,          
   default: null,
 },
-  state: {
-    type: String,
-    required: true,
-  },
+
 }, { timestamps: true });
 
 export const UserProfile = mongoose.model("UserProfile", userProfileSchema);

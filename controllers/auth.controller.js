@@ -311,7 +311,7 @@ export const checkAuth = async (req, res) => {
 
 export const createProfile = async (req, res) => {
   try {
-    const { user, faculty, department, regNumber, gender, state } = req.body;
+    const { user, faculty, currentLevel, fullName, department, regNumber, gender, email } = req.body;
 
     // ✅ Check if profile already exists
     const existing = await UserProfile.findOne({ user });
@@ -319,7 +319,7 @@ export const createProfile = async (req, res) => {
 
     // ✅ Create profile directly with ObjectId
     const profile = await UserProfile.create({
-      user, faculty, department, regNumber, gender, state
+      user, faculty, department, currentLevel, fullName, regNumber, gender, email
     });
 
     res.status(201).json(profile);
