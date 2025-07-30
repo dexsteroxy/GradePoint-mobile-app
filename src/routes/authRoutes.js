@@ -1,6 +1,6 @@
 import express from 'express';
-import {  register, verifyEmail, logout, login, forgotPassword, createProfile, getProfile, updateProfile, uploadAvatar, resetPassword, checkAuth } from '../../controllers/auth.controller.js';
-import { verifyToken } from '../../middleware/verifyToken.js';
+import {  register, verifyEmail, logout, login, forgotPassword, createProfile, getProfile, updateProfile, uploadAvatar, resetPassword, checkAuth, saveGPAResult, getGPAResults, getGPAResultById, deleteGPAResult } from '../../controllers/auth.controller.js';
+import verifyToken  from '../../middleware/verifyToken.js';
 import { upload } from "../../middleware/upload.js";
 import multer from 'multer';
 const storage = multer.memoryStorage();
@@ -20,6 +20,12 @@ router.post("/profile", createProfile);  // POST /api/profile
 router.get("/profile/:userId", getProfile);  // GET /api/profile/:userId
 router.put("/profile/:userId", updateProfile); // PUT /api/profile/:userId
 
+
+// GPA Results endpoints
+router.post("/gpa/save", verifyToken, saveGPAResult);
+router.get("/gpa/results", verifyToken, getGPAResults);
+router.get("/gpa/results/:id", verifyToken, getGPAResultById);
+router.delete("/gpa/results/:id", verifyToken, deleteGPAResult);
 
 router.put(
   "/profile/:userId/avatar",

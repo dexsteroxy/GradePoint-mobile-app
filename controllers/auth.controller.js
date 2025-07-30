@@ -1,5 +1,8 @@
+
+import jwt from 'jsonwebtoken';
 import { User } from "../models/Users.js";
 import { UserProfile } from "../models/UserProfile.js";
+import GPAResult from '../models/GPAResult.js';
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 import {
   sendPasswordResetEmail,
@@ -142,29 +145,44 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email }); // ✅ Fixed: Added await
+    const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid credentials" }); // ✅ Fixed typo
+      return res.status(400).json({ 
+        success: false, 
+        message: "Invalid credentials" 
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
     if (!isPasswordValid) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Incorrect Password" });
+      return res.status(400).json({ 
+        success: false, 
+        message: "Incorrect Password" 
+      });
     }
 
-    generateTokenAndSetCookie(res, user._id);
+    // Generate token (modified)
+    const token = jwt.sign(
+      { id: user._id }, // Ensure payload uses 'id' field
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    // Set cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 3600000 // 1 hour
+    });
 
     user.lastlogin = new Date();
-    await user.save(); // ✅ Fixed: user.save(), not User.save()
+    await user.save();
 
     res.status(200).json({
       success: true,
       message: "Login Successful",
+      token, // Send token in response
       user: {
         ...user._doc,
         password: undefined,
@@ -236,7 +254,7 @@ export const resetPassword = async (req, res) => {
     const { password } = req.body;
 
     // Validate password if needed
-    if (!password || password.length < 8) {
+    if (!password || password.length < 6) {
       return res.status(400).json({
         success: false,
         message: "Password must be at least 8 characters long",
@@ -408,5 +426,133 @@ export const uploadAvatar = async (req, res) => {
   } catch (err) {
     console.error("🔥 Avatar upload error:", err);
     res.status(500).json({ message: "Avatar upload failed" });
+  }
+};
+
+
+
+// for CGPA calculations and dashboard
+
+
+
+export const saveGPAResult = async (req, res) => {
+  try {
+    const { cgpa, courses, level, semester, year } = req.body;
+    
+    // Validate required fields
+    if (!cgpa || !courses || !level || !semester || !year) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields"
+      });
+    }
+
+    // Create new GPA result document
+    const gpaResult = new GPAResult({
+      user: req.user.id, // From verifyToken middleware
+      cgpa: parseFloat(cgpa),
+      courses: courses.map(course => ({
+        code: course.code,
+        unit: parseInt(course.unit),
+        grade: course.grade
+      })),
+      level,
+      semester,
+      year: parseInt(year),
+      date: new Date()
+    });
+
+    await gpaResult.save();
+
+    res.status(201).json({
+      success: true,
+      message: "GPA result saved successfully",
+      data: gpaResult
+    });
+
+  } catch (err) {
+    console.error('Error saving GPA result:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to save GPA result',
+      error: err.message
+    });
+  }
+};
+
+export const getGPAResults = async (req, res) => {
+  try {
+    const results = await GPAResult.find({ user: req.user.id })
+      .sort({ date: -1 })
+      .lean();
+
+    res.status(200).json({
+      success: true,
+      count: results.length,
+      data: results
+    });
+  } catch (err) {
+    console.error('Error fetching GPA results:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch GPA results',
+      error: err.message
+    });
+  }
+};
+
+export const getGPAResultById = async (req, res) => {
+  try {
+    const result = await GPAResult.findOne({
+      _id: req.params.id,
+      user: req.user.id
+    });
+
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: 'GPA result not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: result
+    });
+  } catch (err) {
+    console.error('Error fetching GPA result:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch GPA result',
+      error: err.message
+    });
+  }
+};
+
+export const deleteGPAResult = async (req, res) => {
+  try {
+    const result = await GPAResult.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.id
+    });
+
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: 'GPA result not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'GPA result deleted successfully'
+    });
+  } catch (err) {
+    console.error('Error deleting GPA result:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete GPA result',
+      error: err.message
+    });
   }
 };
