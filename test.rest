@@ -103,7 +103,7 @@ Content-Type: application/json
 ###
 POST http://localhost:3001/api/auth/gpa/save
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OGE4MTdjNjgxNGI2NWUyYWUyZjFiZCIsImlhdCI6MTc1MzkwODY2NCwiZXhwIjoxNzUzOTEyMjY0fQ.-6TCCzSyrWQZPPWVmJPDREcNVJcFA0FZNTLj3_EN55Q
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OGE4MTdjNjgxNGI2NWUyYWUyZjFiZCIsImlhdCI6MTc1Mzk1MzgxNiwiZXhwIjoxNzUzOTU3NDE2fQ.bDpKkzMO43vEzr2iJ0ad-mc42QJ7aEuyvq58wDbHIOo
 
 {
   "cgpa": 4.5,
@@ -129,7 +129,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OGE4MTdjN
 
 GET http://localhost:3001/api/auth/gpa/results
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OGE4MTdjNjgxNGI2NWUyYWUyZjFiZCIsImlhdCI6MTc1MzkwODY2NCwiZXhwIjoxNzUzOTEyMjY0fQ.-6TCCzSyrWQZPPWVmJPDREcNVJcFA0FZNTLj3_EN55Q
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OGE4MTdjNjgxNGI2NWUyYWUyZjFiZCIsImlhdCI6MTc1Mzk1MzgxNiwiZXhwIjoxNzUzOTU3NDE2fQ.bDpKkzMO43vEzr2iJ0ad-mc42QJ7aEuyvq58wDbHIOo
 
 
 

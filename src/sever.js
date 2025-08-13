@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3001;
 // ✅ Use dynamic origin function to allow dev and deployed frontend
 const allowedOrigins = [
   "http://localhost:3000", // local dev
-  "https://your-frontend.onrender.com", // deployed frontend (update to your actual domain)
+  "https://score-1k53.onrender.com", // deployed frontend (update to your actual domain)
 ];
 
 app.use(
